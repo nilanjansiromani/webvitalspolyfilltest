@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script>
+      !(function () {
+        var e,
+          t,
+          n,
+          i,
+          r = { passive: !0, capture: !0 },
+          a = new Date(),
+          o = function () {
+            (i = []), (t = -1), (e = null), f(addEventListener);
+          },
+          c = function (i, r) {
+            e ||
+              ((e = r), (t = i), (n = new Date()), f(removeEventListener), u());
+          },
+          u = function () {
+            if (t >= 0 && t < n - a) {
+              var r = {
+                entryType: "first-input",
+                name: e.type,
+                target: e.target,
+                cancelable: e.cancelable,
+                startTime: e.timeStamp,
+                processingStart: e.timeStamp + t,
+              };
+              i.forEach(function (e) {
+                e(r);
+              }),
+                (i = []);
+            }
+          },
+          s = function (e) {
+            if (e.cancelable) {
+              var t =
+                (e.timeStamp > 1e12 ? new Date() : performance.now()) -
+                e.timeStamp;
+              "pointerdown" == e.type
+                ? (function (e, t) {
+                    var n = function () {
+                        c(e, t), a();
+                      },
+                      i = function () {
+                        a();
+                      },
+                      a = function () {
+                        removeEventListener("pointerup", n, r),
+                          removeEventListener("pointercancel", i, r);
+                      };
+                    addEventListener("pointerup", n, r),
+                      addEventListener("pointercancel", i, r);
+                  })(t, e)
+                : c(t, e);
+            }
+          },
+          f = function (e) {
+            ["mousedown", "keydown", "touchstart", "pointerdown"].forEach(
+              function (t) {
+                return e(t, s, r);
+              }
+            );
+          },
+          p = "hidden" === document.visibilityState ? 0 : 1 / 0;
+        addEventListener(
+          "visibilitychange",
+          function e(t) {
+            "hidden" === document.visibilityState &&
+              ((p = t.timeStamp),
+              removeEventListener("visibilitychange", e, !0));
+          },
+          !0
+        );
+        o(),
+          (self.webVitals = {
+            firstInputPolyfill: function (e) {
+              i.push(e), u();
+            },
+            resetFirstInputPolyfill: o,
+            get firstHiddenTime() {
+              return p;
+            },
+          });
+      })();
+    </script>
+    <script>
+      (function () {
+        var script = document.createElement("script");
+        script.src =
+          "https://unpkg.com/web-vitals@3.3.1/dist/web-vitals.base.iife.js";
+        script.onload = function () {
+          // When loading `web-vitals` using a classic script, all the public
+          // methods can be found on the `webVitals` global namespace.
+          webVitals.onCLS(console.log);
+          webVitals.onFID(console.log);
+          webVitals.onLCP(console.log);
+          webVitals.onFCP(console.log);
+          webVitals.onTTFB(console.log);
+          webVitals.onINP(console.log);
+        };
+        document.head.appendChild(script);
+      })();
+    </script>
+  </head>
+  <body>
+    <h1>hello</h1>
+    <p>
+      I am using the web vitals polyfill, check the console for what web vitals
+      are captured.
+    </p>
+    <img
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAkFBMVEXqIiP////qHyDpAADrJSb+9PTqGhvpDA7pExTrLC397Oz1nZ3ygYLyiIj50NDyf3/tTk7vWVnrMjP5xcbwcnPzjo/3sbHvXl7uU1TpDxH4vb3zk5P/+vr2qan85eX3tbXtREX829vsOTrvZGT96Of83t771NTwcHHvYWL1mprxcnD4u7vrODjsQEH3tLT1o6IHv/RDAAAEU0lEQVR4nO3ba3uaMBgGYMxrE7TWwjxisVZru4Oz/f//bgKigbwB3XQj7rk/9SIxyQOUY/A8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEpCyIT4rZ+W2Qos1Zla1jZrO+UG6NOO7wUJT+3+jpja0pCXtE3CVpJ0x9Q3KtnbrOjVks+nTm/RX7cO4uVmtCJVDjktCzv7Bh5aZQNKC4ZGwcj3RCc2FpcIoT6Nhe9U3IJ3Ro2ez+WLqLfkOunOVyQLLZrjCrIKfu/0hA9JQnNsRXe7hPfG0n4xoewaNR6ZhJIe7N31AzpuR26dOZBQvbxVdjU/7qpuJqTHmq5abyLfU51MqMyRGbpt6W5CGdZ0lHpTwtWEQj3XdJQZk6sJ1feafnKvvpsJhazrJ/dGbiZkhmXzKp1MSP2abo7GysWE9d0crcnFhPK1phe9w45wMCFzP2A3kX83YXyJhNGIa/p9MOAWJ7+8asJ4M9Ntduey6yQckqIts4Ifrp2wSwXqWgnnSRPqq1nwFF09oVdynYRhet5r33DCaZbQTHIzCUMkREI9Yco8atkS6g8pxZUTfjELzk+4Hi92PsyzqyXhKtBshQMJrSzXNLGmtaEbTFgwQ0IkREKzAAndTzi6+YS9s+8PrZAwcZmEam62jITGciRkIGECCd1POLjBhHfDniZ519X4hPHHx+4W/8mc9mN7iuFrklYbn3CdPad5OTmhV9L4hN30cZIM3Ep4zqwvFxN63qTsWz5zz5mE0+qE1tmX7iScVCe0ukTC8qpjE+rPjNmESqsRPZlB+iQ8QczL4aGWUMjIlxdPGIQFbMLlsdKLYBN+nx5qdAT7lnvQIWKSZ/+gaTxF2x+jx5AKU0//PGEZ+5Zbs1BsQs1ESuZFqE06UyGNIj/3gxtMtamnF0/Iz1TQjGsThlK+1E5FPljv/8VpqP1mfJzy3syEHlVWKLeXBixOhOsfZpY3NeGmppuj7ECjytNtZ5E94XO62f9tQubtpa2/dHuIn8a48tNPQxMK/9TddEGWE+izL5qckDvj8LKrz2htloTW69JGJDx17t5gP1jm2PsUNTqhp06b2rZNNxQ70y/bf5ub0KP3mp4S91kKNuGs6QlP2U/zj43khCn8VA1P6PnTmq6SvvZXpMwklNbXZh9p0gNkTcR4dbjCppk5EK/ZZ4tscKuqes+d4y0E8/3JXDX6jJ8PPDK3zaGdSL9HokWpuJvvwc1OuLvlDZdsncK3eUlFVZzdHwcVTzHWf5QwZr+w1Hwo9tmfZqJvHEnBonw6786/UOlOfrcu9M29Do43/md8JZsdtX7vK9lS83Ut6CRRcL9YZjHj98Voa34jm+6ow/zSLZ5LfQX8nS+dz61QCpl836zaXjt5VB2VN1/Op9fPQb8/Hkri1oADKr/4TmVrwnc0HwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/C9+ARZultqQpurbAAAAAElFTkSuQmCC"
+    />
+    <button>Click me and nothing happens</button>
+  </body>
+</html>
